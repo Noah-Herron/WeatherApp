@@ -469,6 +469,9 @@
                 .then((data) => {
                     // Extract city and state from address object
                     const address = data.address;
+                    // debug for checking the address
+                    console.log("Address Data:", address);
+
                     const city =
                         address.city ||
                         address.town ||
@@ -497,7 +500,7 @@
                         getLocationName(lat, lon)
                             .then((locationName) => {
                                 document.getElementById("location").innerText = locationName;
-                                console.log(locationName)
+                                console.log("Location Name:", locationName)
                             })
                             .catch((error) => {
                                 console.error("Error getting location name:", error);
