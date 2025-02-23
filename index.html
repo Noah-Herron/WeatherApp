@@ -1,183 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Herron Weather App</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-      crossorigin="anonymous"
-    />
-  </head>
+    
+    <!-- Make app full screen and standalone -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    
+    <!-- App name when installed -->
+    <meta name="Herron Weather App" content="Weather" />
+    
+    <!-- For iOS devices -->
+    <link rel="apple-touch-icon" href="images\HerronWeatherApp.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="images\HerronWeatherApp.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images\HerronWeatherApp.png" />
+    <link rel="apple-touch-icon" sizes="167x167" href="images\HerronWeatherApp.png" />
+    
+    <!-- For Android devices -->
+    <link rel="icon" sizes="192x192" href="images\HerronWeatherApp.png" />
+    <link rel="icon" sizes="128x128" href="images\HerronWeatherApp.png" />
+    
+    <title>Weather Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #1a1d21;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+        }
 
-  <body class="bg-dark">
-    <!-- Login Form -->
-    <form
-      id="frmLogin"
-      class="card col-12 col-md-6 offset-md-3 col-lg-4 offset-lg-4 mt-5"
-    >
-      <div class="card-body">
-        <h1 class="text-center mt-2">Swollen Hippo</h1>
-        <h3 class="text-center mt-2">Login</h3>
+        .weather-container {
+            max-width: 500px;
+            margin: 2rem auto;
+            padding: 2rem;
+        }
 
-        <div class="form-floating mt-4 mb-2">
-          <input
-            id="txtLoginEmail"
-            class="form-control"
-            type="email"
-            placeholder="Email"
-            aria-label="Input for Email Address"
-          />
-          <label for="txtLoginEmail">Email:</label>
-          <div id="txtLoginEmail-error" class="error-message text-danger"></div>
+        .location-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+
+        .temperature {
+            font-size: 6rem;
+            font-weight: 300;
+            margin: 2rem 0;
+        }
+
+        .condition {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .weather-detail-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+            /* Adjust the spacing between each weather item */
+        }
+
+        .weather-detail-item i {
+            font-size: 2em;
+            /* Icon size */
+            color: #ffff;
+            /* Icon color (you can change it) */
+            margin-bottom: 5px;
+            /* Space between the icon and the value */
+        }
+
+        .detail-value {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 0;
+            /* Remove any margin */
+        }
+
+        .detail-label {
+            font-size: 0.9em;
+            color: #666;
+            margin: 0;
+            /* Remove any margin */
+            padding-top: 5px;
+            /* Optional: add some space between value and label */
+        }
+
+        .condition {
+            font-size: 2rem;
+            margin-bottom: 3rem;
+            display: flex;
+            /* Use flexbox to align items side by side */
+            align-items: center;
+            /* Vertically center the items */
+            justify-content: center;
+            /* Optionally, center the items horizontally */
+            gap: 10px;
+            /* Optional: Add space between the icon and the text */
+        }
+
+        .weather-details {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            /* Adjust layout for smaller screens */
+            gap: 20px;
+            /* Space between weather items */
+        }
+
+        /* Visual indicator for temperature */
+        .temp-indicator {
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(to right, blue, red);
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .temp-marker {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            top: -3px;
+            transform: translateX(-50%);
+        }
+
+        /* Forecast chart container */
+        .forecast-container {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            height: 300px;
+            /* Set a fixed height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #forecastChart {
+            max-height: 100%;
+            /* Prevents chart from growing indefinitely */
+        }
+
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            border: 0;
+        }
+
+        /* Footer styling */
+        .footer {
+            text-align: center;
+            padding: 1rem;
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* Responsive design improvements */
+        @media (max-width: 576px) {
+            .weather-container {
+                padding: 1rem;
+                margin: 1rem;
+            }
+
+            .temperature {
+                font-size: 4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="weather-container">
+        <!-- Location header with accessibility improvements -->
+        <div class="location-header">
+            <h1 id="location" class="h2">Loading location...</h1>
+            <div>
+                <button class="btn btn-link text-white" aria-label="Edit location">
+                    <i class="bi bi-pencil-fill"></i>
+                </button>
+                <button class="btn btn-link text-white" aria-label="Get current location">
+                    <i class="bi bi-geo-alt"></i>
+                </button>
+            </div>
         </div>
 
-        <button class="btn btn-primary col-12 mt-3" type="button" id="btnLogin">
-          Login
-        </button>
-        <button class="btn btn-link col-12" type="button" id="btnShowRegister">
-          Need an account? Register here
-        </button>
-      </div>
-    </form>
+        <!-- Main weather display -->
+        <div class="text-center">
+            <div class="temperature" id="temperature">--°F</div>
+            <div class="temp-indicator">
+                <div class="temp-marker" id="temp-marker"></div>
+            </div>
+            <div class="condition" id="condition">
+                <i id="weather-icon" class="bi bi-cloud" aria-hidden="true"></i>
+                <div class="detail-value" id="condition-text">Loading...</div>
+            </div>
+        </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <!-- Detailed weather information -->
+        <div class="weather-details">
+            <div class="weather-detail-item">
+                <i class="bi bi-thermometer-half" aria-hidden="true"></i>
+                <div class="detail-value" id="feels-like">--°F</div>
+                <div class="detail-label">Feels like</div>
+            </div>
+            <div class="weather-detail-item">
+                <i class="bi bi-wind" aria-hidden="true"></i>
+                <div class="detail-value" id="wind-speed">-- mph</div>
+                <div class="detail-label">Wind</div>
+            </div>
+            <div class="weather-detail-item">
+                <i class="bi bi-droplet" aria-hidden="true"></i>
+                <div class="detail-value" id="humidity">--%</div>
+                <div class="detail-label">Humidity</div>
+            </div>
+        </div>
+
+        <!-- Hourly forecast chart -->
+        <h2 class="h5 text-center mt-4">7 Day Forecast</h2>
+        <!-- Move this outside the container -->
+        <div class="forecast-container">
+            <canvas id="forecastChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Required attribution footer -->
+    <footer class="footer">
+        <p>
+            Weather data provided by
+            <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>
+        </p>
+    </footer>
+
     <script>
-      // Start GLobal Variables
-      const regEmail =
-        /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
-      const strBaseURL = "https://api.open-meteo.com/v1/forecast";
-      // What to add to URL (?latitude=52.52&longitude=13.41&hourly=temperature_2m)
-      // End Global Variables
+        // Chart.js instance for forecast
+        let forecastChart;
 
-      // Start Functions to get Location using Geolocation API
-      const strLatitude = "";
-      const strLongitude = "";
-      function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-          console.log("Geolocation is not supported by this browser.");
-        }
-      }
-
-      function showPosition(position) {
-        strLatitude = position.coords.latitude;
-        strLongitude = position.coords.longitude;
-      }
-
-      function getLocation() {
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(position => {
-            const lat = position.coords.latitude.toFixed(2);
-            const lon = position.coords.longitude.toFixed(2);
-            document.getElementById("location").innerText = `Lat: ${lat}, Lon: ${lon}`;
-            fetchWeather(lat, lon);
-          }, () => {
-            Swal.fire({
-              title: "Location Error",
-              text: "Location access denied.",
-              icon: "error"
-            });
-          });
-        } else {
-          Swal.fire({
-            title: "Geolocation Error",
-            text: "Geolocation is not supported by this browser.",
-            icon: "error"
-          });
-        }
-      }
-      // End Functions to get Location using Geolocation API
-
-      // Start Weather Function using OpenMeteo API
-      function fetchWeather(lat, lon) {
-        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m&temperature_unit=fahrenheit&timezone=auto`;
-        fetch(url)
-          .then(response => response.json())
-          .then(data => {
-            document.getElementById("temperature").innerText = `Temperature: ${data.current.temperature_2m}°F`;
-            document.getElementById("humidity").innerText = `Humidity: ${data.current.relative_humidity_2m}%`;
-          })
-          .catch(() => {
-            Swal.fire({
-              title: "Error",
-              text: "Error fetching weather data",
-              icon: "error"
-            });
-          });
-      }
-      // Weather Weather Function using OpenMeteo API
-
-      // Validation function for latitude and longitude
-      function validateLatitudeLongitude(strLatitude, strLongitude) {
-        const regLatLon = /^-?\d{1,2}\.\d{2}$/;
-        return regLatLon.test(strLatitude) && regLatLon.test(strLongitude);
-      }
-
-      function clearError(elementId) {
-        const element = document.querySelector(`#${elementId}`);
-        const errorElement = document.querySelector(`#${elementId}-error`);
-        element.classList.remove("error-input");
-        errorElement.textContent = "";
-      }
-
-      // Weather form validation
-      document.querySelector("#btnLogin").addEventListener("click", (e) => {
-        // Validate the data
-        let blnError = false;
-        let strError = "";
-
-        if (!regLatLon.test(strLatitude, strLongitude)) {
-          blnError = true;
-          strError += "<p>Latitude and Longitude are not Valid</p>";
-        }
-        if (blnError == true) {
-          Swal.fire({
-            title: "Look a little closer, there are errors",
-            html: strError,
-            icon: "error",
-          });
-        } else {
-          // Call our function to create the account
-        }
-      });
-
-      // Validation for Registration form
-      document.querySelector("#btnRegister").addEventListener("click", (e) => {
-        let blnError = false;
-
-        // Email validation
-        const strEmail = document.querySelector("#txtEmail").value.trim();
-        if (!validateEmail(strEmail)) {
-          blnError = true;
-          showError("txtEmail", "Please enter a valid email address");
-        } else {
-          clearError("txtEmail");
+        // Function to update visual indicators
+        function updateVisualIndicators(temp, humidity) {
+            const tempPercent = ((temp + 20) / 140) * 100;
+            document.getElementById("temp-marker").style.left = `${tempPercent}%`;
+            document.getElementById("humidity").style.height = `${humidity}%`;
         }
 
-        if (blnError) {
-          Swal.fire({
-            title: "Registration Error",
-            text: "Please correct the highlighted fields",
-            icon: "error",
-          });
-        } else {
-          Swal.fire({
-            title: "Success!",
-            text: "Your registration was successful",
-            icon: "success",
-          }).then(() => {
-            // if successful registration, displays login form
-            document.querySelector("#frmRegister").style.display = "none";
-            document.querySelector("#frmLogin").style.display = "block";
-          });
+        // Function to update weather icon based on conditions
+        function updateWeatherIcon(isDay, precipitation) {
+            let iconClass = "bi-cloud";
+            let conditionText = "Loading..."; // Default condition text
+
+            if (precipitation > 0) {
+                iconClass = "bi-cloud-rain";
+                conditionText = "Rainy"; // If precipitation, change text to "Rainy"
+            } else if (isDay) {
+                iconClass = "bi-sun";
+                conditionText = "Day"; // If daytime, change text to "Day"
+            } else {
+                iconClass = "bi-moon";
+                conditionText = "Night"; // If nighttime, change text to "Night"
+            }
+
+            // Update the weather icon and condition text
+            document.getElementById("weather-icon").className = `bi ${iconClass}`;
+            document.getElementById("condition-text").textContent = conditionText;
         }
-      });
+
+        // Function to create/update forecast chart
+        function updateForecastChart(dailyData) {
+            try {
+                const ctx = document.getElementById("forecastChart").getContext("2d");
+
+                if (forecastChart) {
+                    forecastChart.destroy();
+                }
+
+                forecastChart = new Chart(ctx, {
+                    type: "line",
+                    data: {
+                        labels: dailyData.time
+                            .slice(0, 6)
+                            .map((time) =>
+                                new Date(time).toLocaleDateString([], { day: "numeric" })
+                            ),
+                        datasets: [
+                            {
+                                label: "High Temperature (°F)",
+                                data: dailyData.temperature_2m_max
+                                    ? dailyData.temperature_2m_max.slice(0, 6)
+                                    : [],
+                                borderColor: "red",
+                                backgroundColor: "rgba(255, 0, 0, 0.2)",
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: false,
+                            },
+                            {
+                                label: "Low Temperature (°F)",
+                                data: dailyData.temperature_2m_min
+                                    ? dailyData.temperature_2m_min.slice(0, 6)
+                                    : [],
+                                borderColor: "blue",
+                                backgroundColor: "rgba(0, 0, 255, 0.2)",
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: false,
+                            },
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true, // Prevents excessive vertical growth
+                        aspectRatio: 2, // Keeps chart proportionate
+                        plugins: {
+                            legend: {
+                                display: true, // Ensure legend is visible
+                            },
+                        },
+                        scales: {
+                            y: {
+                                min:
+                                    Math.min(...dailyData.temperature_2m_min.slice(0, 24)) - 5, // Dynamic min range
+                                max:
+                                    Math.max(...dailyData.temperature_2m_max.slice(0, 24)) + 5, // Dynamic max range
+                                grid: {
+                                    color: "rgba(255,255,255,0.1)",
+                                },
+                                ticks: {
+                                    color: "rgba(255,255,255,0.7)",
+                                    stepSize: 10, // Adjusted step size
+                                    callback: function (value) {
+                                        return value + "°F";
+                                    },
+                                },
+                            },
+                            x: {
+                                grid: {
+                                    color: "rgba(255,255,255,0.1)",
+                                },
+                                ticks: {
+                                    color: "rgba(255,255,255,0.7)",
+                                },
+                            },
+                        },
+                    },
+                });
+            } catch (error) {
+                console.error("Chart error:", error);
+            }
+        }
+
+        // Function to fetch weather data
+        function fetchWeather(lat, lon) {
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,is_day,precipitation&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
+
+            fetch(url)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    console.log("Received data:", data); // Debug log
+
+                    // Update current conditions
+                    const temp = Math.round(data.current.temperature_2m);
+                    const humidity = Math.round(data.current.relative_humidity_2m);
+
+                    document.getElementById("temperature").innerText = `${temp}°F`;
+                    document.getElementById("humidity").innerText = `${humidity}%`;
+                    document.getElementById("feels-like").innerText = `${Math.round(
+                        data.current.apparent_temperature
+                    )}°F`;
+                    document.getElementById(
+                        "wind-speed"
+                    ).innerText = `${data.current.wind_speed_10m.toFixed(1)} mph`;
+
+                    // Update visual indicators
+                    updateVisualIndicators(temp, humidity);
+                    updateWeatherIcon(data.current.is_day, data.current.precipitation);
+
+                    // Check if hourly data exists before updating chart
+                    if (data.hourly && data.hourly.temperature_2m && data.hourly.time) {
+                        updateForecastChart(data.daily);
+                    } else {
+                        console.error("Missing hourly data:", data);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Weather data error:", error);
+                    Swal.fire({
+                        title: "Error",
+                        text: `Error fetching weather data: ${error.message}`,
+                        icon: "error",
+                        background: "#1a1d21",
+                        color: "#fff",
+                    });
+                });
+        }
+
+        // Function to get user location
+        function getLocationName(lat, lon) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
+
+            return fetch(url, {
+                headers: {
+                    'Accept': 'application/json',
+                    'User-Agent': 'Weather Dashboard App' // Required by Nominatim's usage policy
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Extract city and state from address object
+                    const address = data.address;
+                    const city = address.city || address.town || address.village || address.suburb || 'Unknown City';
+                    const state = address.state || '';
+
+                    return `${city}, ${state}`;
+                })
+                .catch(error => {
+                    console.error('Geocoding error:', error);
+                    return 'Current Location'; // Fallback text
+                });
+        }
+
+        // Update the getLocation function to include reverse geocoding
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude.toFixed(2);
+                        const lon = position.coords.longitude.toFixed(2);
+
+                        // First get the location name
+                        getLocationName(lat, lon)
+                            .then(locationName => {
+                                document.getElementById("location").innerText = locationName;
+                            })
+                            .catch(error => {
+                                console.error('Error getting location name:', error);
+                                document.getElementById("location").innerText = 'Current Location';
+                            });
+
+                        // Then fetch weather data
+                        fetchWeather(lat, lon);
+                    },
+                    (error) => {
+                        console.error("Geolocation error:", error);
+                        Swal.fire({
+                            title: "Location Error",
+                            text: "Location access denied.",
+                            icon: "error",
+                            background: "#1a1d21",
+                            color: "#fff",
+                        });
+                    }
+                );
+            } else {
+                Swal.fire({
+                    title: "Geolocation Error",
+                    text: "Geolocation is not supported by this browser.",
+                    icon: "error",
+                    background: "#1a1d21",
+                    color: "#fff",
+                });
+            }
+        }
+
+        // Initialize application
+        window.onload = getLocation;
     </script>
-  </body>
+</body>
+
 </html>
