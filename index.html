@@ -274,7 +274,7 @@
             console.log(conditionText);
 
             // Debugging to test the background colors
-            // conditionText = "Day"
+            // conditionText = "Rainy"
 
             if (!document.body) return; // Ensure body exists before modifying
 
@@ -497,6 +497,7 @@
                         getLocationName(lat, lon)
                             .then((locationName) => {
                                 document.getElementById("location").innerText = locationName;
+                                console.log(locationName)
                             })
                             .catch((error) => {
                                 console.error("Error getting location name:", error);
