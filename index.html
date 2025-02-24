@@ -137,11 +137,6 @@
         </div>
     </div>
 
-    <div class="install-prompt" id="installPrompt">
-        <p>Add this app to your home screen for the best experience!</p>
-        <button class="install-button" id="installButton">Install App</button>
-    </div>
-
     <!-- Required attribution footer -->
     <footer class="footer">
         <p>
@@ -451,51 +446,57 @@
         }
 
         // Register service worker for PWA functionality
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker.js')
-                .then(registration => {
-                    console.log('Service Worker registered with scope:', registration.scope);
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker
+                .register("service-worker.js")
+                .then((registration) => {
+                    console.log(
+                        "Service Worker registered with scope:",
+                        registration.scope
+                    );
                 })
-                .catch(error => {
-                    console.error('Service Worker registration failed:', error);
+                .catch((error) => {
+                    console.error("Service Worker registration failed:", error);
                 });
         }
 
         // Display install prompt on mobile devices
         let deferredPrompt;
-        const installPrompt = document.getElementById('installPrompt');
-        const installButton = document.getElementById('installButton');
+        const installPrompt = document.getElementById("installPrompt");
+        const installButton = document.getElementById("installButton");
 
-        window.addEventListener('beforeinstallprompt', (e) => {
+        window.addEventListener("beforeinstallprompt", (e) => {
             // Prevent Chrome 67 and earlier from automatically showing the prompt
             e.preventDefault();
             // Stash the event so it can be triggered later
             deferredPrompt = e;
             // Show the install prompt
-            installPrompt.style.display = 'block';
+            installPrompt.style.display = "block";
         });
 
-        installButton.addEventListener('click', () => {
+        installButton.addEventListener("click", () => {
             // Hide the app provided install promotion
-            installPrompt.style.display = 'none';
+            installPrompt.style.display = "none";
             // Show the install prompt
             deferredPrompt.prompt();
             // Wait for the user to respond to the prompt
             deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === 'accepted') {
-                    console.log('User accepted the install prompt');
+                if (choiceResult.outcome === "accepted") {
+                    console.log("User accepted the install prompt");
                 } else {
-                    console.log('User dismissed the install prompt');
+                    console.log("User dismissed the install prompt");
                 }
                 deferredPrompt = null;
             });
         });
 
         // Check if app is in standalone mode and adjust UI accordingly
-        if (window.matchMedia('(display-mode: standalone)').matches ||
-            window.navigator.standalone === true) {
+        if (
+            window.matchMedia("(display-mode: standalone)").matches ||
+            window.navigator.standalone === true
+        ) {
             // App is running in standalone mode, adjust UI if needed
-            document.querySelector('.app-header').style.paddingTop = '20px'; // Add space for iOS status bar
+            document.querySelector(".app-header").style.paddingTop = "20px"; // Add space for iOS status bar
         }
 
         // Initialize application
