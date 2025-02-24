@@ -5,7 +5,8 @@ const urlsToCache = [
   '/manifest.json',
   '/icons/apple-touch-icon.png',
   '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/icons/icon-512x512.png',
+  'https://noah-herron.github.io/WeatherApp/'
   // Add other assets you want to cache
 ];
 
