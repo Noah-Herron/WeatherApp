@@ -17,5 +17,7 @@
   "background_color": "#1a1d21",
   "display": "standalone",
   "scope": "https://noah-herron.github.io/WeatherApp/",
-  "theme_color": "#1a1d21"
+  "theme_color": "#1a1d21",
+  "related_applications": [],
+  "prefer_related_applications": false
 }
