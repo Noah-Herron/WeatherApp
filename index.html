@@ -305,8 +305,14 @@
             // setting url equal to the Open-Meteo api
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,is_day,precipitation&hourly=temperature_2m&daily=temperature_2m_max,temperature_2m_min&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=auto`;
 
-            // fetching the weather data
-            fetch(url)
+            // fetching the weather data with proper headers for PWA
+            fetch(url, {
+                method: "GET",
+                headers: {
+                    Accept: "application/json",
+                },
+                mode: "cors",
+            })
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -315,11 +321,9 @@
                 })
                 .then((data) => {
                     // console.log("Received data:", data); // Debug log
-
                     // Updating current weather conditions conditions, e.g. Temp and Humidity
                     const temp = Math.round(data.current.temperature_2m); // rounding the values of tempurature
                     const humidity = Math.round(data.current.relative_humidity_2m); // rounding the value of humidity
-
                     // updating the html of the given ID's to be updated with the new weather values
                     // this is neccessary since I set a placeholder value for these items
                     document.getElementById("temperature").innerText = `${temp}°F`;
@@ -330,11 +334,9 @@
                     document.getElementById(
                         "wind-speed"
                     ).innerText = `${data.current.wind_speed_10m.toFixed(1)} mph`;
-
                     // Update visual indicators
                     updateVisualIndicators(temp, humidity);
                     updateWeatherIcon(data.current.is_day, data.current.precipitation);
-
                     // Checking if hourly data exists before updating chart
                     if (data.hourly && data.hourly.temperature_2m && data.hourly.time) {
                         updateForecastChart(data.daily);
@@ -354,7 +356,6 @@
                 });
         }
 
-        // Function to get users location
         function getLocationName(lat, lon) {
             // setting the url of the api
             const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`;
@@ -364,6 +365,7 @@
                     Accept: "application/json",
                     "User-Agent": "Weather Dashboard App",
                 },
+                mode: "cors", // Important for PWAs
             })
                 .then((response) => {
                     if (!response.ok) {
