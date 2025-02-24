@@ -5,9 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Web App Manifest -->
-    <link rel="manifest" href="manifest.json" />
-
     <!-- Make app full screen and standalone -->
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="mobile-web-app-capable" content="yes" />
@@ -74,17 +71,6 @@
             max-height: 100%;
         }
 
-        .sr-only {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip: rect(0, 0, 0, 0);
-            border: 0;
-        }
-
         .footer {
             text-align: center;
             padding: 1rem;
@@ -99,7 +85,7 @@
 </head>
 
 <body>
-    <div class="container weather-container">
+    <div class="container mx-auto my-5 p-4" style="max-width: 500px">
         <!-- Location header with accessibility improvements -->
         <div class="d-flex justify-content-between align-items-center mb-5">
             <h1 id="location" class="h2">Loading location...</h1>
@@ -112,36 +98,32 @@
 
         <!-- Main weather display -->
         <div class="text-center">
-            <div class="temperature display-1 fw-light my-4" id="temperature">
-                --°F
-            </div>
+            <div class="display-1 fw-light my-4" id="temperature">--°F</div>
             <div class="temp-indicator">
                 <div class="temp-marker" id="temp-marker"></div>
             </div>
             <div class="d-flex align-items-center justify-content-center gap-2 my-5" id="condition">
                 <i id="weather-icon" class="bi bi-cloud fs-1" aria-hidden="true"></i>
-                <div class="detail-value fs-2 fw-bold" id="condition-text">
-                    Loading...
-                </div>
+                <div class="fs-5 fw-bold m-0" id="condition-text">Loading...</div>
             </div>
         </div>
 
         <!-- Detailed weather information -->
         <div class="d-flex justify-content-around flex-wrap gap-4">
-            <div class="weather-detail-item text-center">
+            <div class="d-flex flex-column align-items-center mb-3">
                 <i class="bi bi-thermometer-half fs-2 mb-2" aria-hidden="true"></i>
-                <div class="detail-value fs-5 fw-bold" id="feels-like">--°F</div>
-                <div class="detail-label text-secondary">Feels like</div>
+                <div class="fs-5 fw-bold m-0" id="feels-like">--°F</div>
+                <div class="fs-6 text-secondary m-0 pt-1">Feels like</div>
             </div>
-            <div class="weather-detail-item text-center">
+            <div class="d-flex flex-column align-items-center mb-3">
                 <i class="bi bi-wind fs-2 mb-2" aria-hidden="true"></i>
-                <div class="detail-value fs-5 fw-bold" id="wind-speed">-- mph</div>
-                <div class="detail-label text-secondary">Wind</div>
+                <div class="fs-5 fw-bold m-0" id="wind-speed">-- mph</div>
+                <div class="fs-6 text-secondary m-0 pt-1">Wind</div>
             </div>
-            <div class="weather-detail-item text-center">
+            <div class="d-flex flex-column align-items-center mb-3">
                 <i class="bi bi-droplet fs-2 mb-2" aria-hidden="true"></i>
-                <div class="detail-value fs-5 fw-bold" id="humidity">--%</div>
-                <div class="detail-label text-secondary">Humidity</div>
+                <div class="fs-5 fw-bold m-0" id="humidity">--%</div>
+                <div class="fs-6 text-secondary m-0 pt-1">Humidity</div>
             </div>
         </div>
 
