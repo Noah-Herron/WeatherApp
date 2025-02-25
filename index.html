@@ -462,14 +462,14 @@
                 });
         }
 
-        // Check if app is in standalone mode and adjust UI accordingly
-        if (
-            window.matchMedia("(display-mode: standalone)").matches ||
-            window.navigator.standalone === true
-        ) {
-            // App is running in standalone mode, adjust UI if needed
-            document.querySelector(".app-header").style.paddingTop = "20px"; // Add space for iOS status bar
-        }
+        // // Check if app is in standalone mode and adjust UI accordingly
+        // if (
+        //     window.matchMedia("(display-mode: standalone)").matches ||
+        //     window.navigator.standalone === true
+        // ) {
+        //     // App is running in standalone mode, adjust UI if needed
+        //     document.querySelector(".app-header").style.paddingTop = "20px"; // Add space for iOS status bar
+        // }
 
         // Initialize application
         window.onload = getLocation;
