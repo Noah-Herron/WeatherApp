@@ -1,3 +1,9 @@
+<!--
+Noah Herron
+2/24/2025
+CSC 3100
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +16,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
-    <!-- Web App Manifest -->
+    <!-- Web App Manifest to allow browser bar to be removed with service worker -->
     <link rel="manifest" href="manifest.json" />
 
     <!-- App name when installed -->
@@ -26,6 +32,7 @@
     <link rel="icon" sizes="192x192" href="images\HerronWeatherApp.png" />
     <link rel="icon" sizes="128x128" href="images\HerronWeatherApp.png" />
 
+    <!--Title of Page-->
     <title>Weather Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
@@ -130,14 +137,14 @@
             </div>
         </div>
 
-        <!-- Hourly forecast chart -->
+        <!-- 7 day forecast chart -->
         <h2 class="h5 text-center mt-4">7 Day Forecast</h2>
         <div class="forecast-container">
             <canvas id="forecastChart"></canvas>
         </div>
     </div>
 
-    <!-- Required attribution footer -->
+    <!-- Attribution footer -->
     <footer class="footer">
         <p>
             Weather data provided by
@@ -145,11 +152,12 @@
         </p>
     </footer>
     <script>
-        // Chart.js instance for forecast graph
+        // Chart.js instance for forecast graph, Makes very cool graphs
         let forecastChart;
 
         // Function to update visual indicators
         function updateVisualIndicators(temp, humidity) {
+            // getting the percentage the temp is to display it properly on the temp bar
             const tempPercent = ((temp + 20) / 140) * 100;
             document.getElementById("temp-marker").style.left = `${tempPercent}%`;
             document.getElementById("humidity").style.height = `${humidity}%`;
@@ -206,6 +214,7 @@
         // Function to createand update forecast chart
         function updateForecastChart(dailyData) {
             try {
+                // Creating the chart / graph
                 const ctx = document.getElementById("forecastChart").getContext("2d");
 
                 // if forcast chart exist destroy it so we can make a new one
@@ -462,18 +471,19 @@
                 });
         }
 
-        // // Check if app is in standalone mode and adjust UI accordingly
-        // if (
-        //     window.matchMedia("(display-mode: standalone)").matches ||
-        //     window.navigator.standalone === true
-        // ) {
-        //     // App is running in standalone mode, adjust UI if needed
-        //     document.querySelector(".app-header").style.paddingTop = "20px"; // Add space for iOS status bar
-        // }
-
         // Initialize application
         window.onload = getLocation;
     </script>
 </body>
 
 </html>
+
+<!--I had chatGPT help trouble shoot a few problems I had
+    First onw was .temp-indicator{} specifically I used it to help me get the gradient I wanted for the color shoft from baby blue to redish orange
+
+    Second was the integration with the service worker I kept having issuse reading the avalible documentation for service workers ans
+    PWA's, so it was useful for it to better explain what is supposed to be happening
+
+    Third was line 387, const city = , It had the idea of getting to location for city from city first then town then village, etc. For some locations
+    there is none of those, like at my House it says Unknown location in tennessee. This seems to be a limitation of the API. 
+-->

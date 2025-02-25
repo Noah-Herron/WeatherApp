@@ -1,4 +1,5 @@
-// I used Claude to help me make this service worker
+// Npah Herron
+// I used Claude to help me make / trouble shoot this service worker
 
 const CACHE_NAME = 'weather-app-cache-v1';
 const APP_STATIC_RESOURCES = [
@@ -6,7 +7,6 @@ const APP_STATIC_RESOURCES = [
   './index.html',
   './manifest.json',
   './weather/HerronWeatherApp.png',
-  // Add other static assets you want to cache (CSS, JS, etc.)
 ];
 
 // Install handler - cache static resources
@@ -45,6 +45,7 @@ self.addEventListener('fetch', (event) => {
   const requestUrl = new URL(event.request.url);
   
   // Special handling for API requests
+  // very important as when I didnt include this it would block all API request
   if (requestUrl.hostname === 'api.open-meteo.com' || 
       requestUrl.hostname === 'nominatim.openstreetmap.org') {
     
